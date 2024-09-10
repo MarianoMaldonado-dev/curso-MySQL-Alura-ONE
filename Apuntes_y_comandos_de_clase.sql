@@ -4,6 +4,36 @@ SELECT NOMBRE, DNI, DIRECCION_1, DIRECCION_2, BARRIO, CIUDAD, ESTADO,
 CP, FECHA_DE_NACIMIENTO, EDAD, SEXO, LIMITE_DE_CREDITO, VOLUMEN_DE_COMPRA,
 PRIMERA_COMPRA FROM TABLA_DE_CLIENTES;
 SELECT * FROM TABLA_DE_CLIENTES;
+/*
+			ACERCA DE ESTE CURSO
+ESTE ES EL CURSO BASICO INICIAL DE SQL CON MySQL DICTADO POR ALURA LATAM DENTRO DE LA BECA ORACLE NEXT EDUCATION
+SI ES SU PRIMERA VEZ APRENDIENDO SQL, PORFAVOR, NO COMETA LA EQUIVOCACION DE EJECUTAR ESTE SCRIPT COMPLETAMENTE
+DEBIDO A QUE HARA UN PROCESO DE EJECUCION QUE ELEVARA EL USO DE RECURSOS DE SU SISTEMA.
+
+SI AUN NO TIENE EL ESQUEMA Y LA ESTRUCTURA DE ESTA BASE DE DATOS, PUEDE ENCONTRARLA O COMPARARLA EN EL SIGUIENTE ENLACE:
+https://github.com/alura-es-cursos/1827-consultas-sql-avanzando-en-sql-con-my-sql
+
+	LA FORMA MAS ADECUADA DE EJECUTAR ESTE SCRIPT ES SELECIONAR LINEA A LINEA YA QUE CADA 'SELECT' CORRESPONDE A UNA CONSULTA.
+
+EN SQL existe varias subcategorías que tienen roles específicos, como:
+
+    DML (Data Manipulation Language): Se utiliza para manejar los datos dentro de las tablas. Incluye comandos como SELECT, INSERT, UPDATE, y DELETE.
+
+    DDL (Data Definition Language): Se utiliza para definir y modificar la estructura de las bases de datos y sus objetos. Incluye comandos como CREATE, ALTER, y DROP.
+
+    DCL (Data Control Language): Se usa para controlar el acceso a los datos y la seguridad. Incluye comandos como GRANT y REVOKE.
+
+    TCL (Transaction Control Language): Maneja las transacciones en una base de datos, asegurando que las operaciones se completen de manera correcta y coherente. Incluye comandos como COMMIT, ROLLBACK, y SAVEPOINT.
+    
+ESTE SCRIPT UTILIZA DML COMO APRENDIZAJE INICIAL. PUEDE UTILIZAR ESTA BASE DE DATOS CON CUALQUIER CURSO SQL QUE USTED HAGA
+Y ADAPTAR LOS COMANDOS DE CONSULTA DE SU CURSO PARA QUE COINCIDA CON LOS DATOS AQUI PROPORCIONADOS.
+	SIENTA LIBRE, INCLUSIVE, DE UTILIZAR CRUD A SU MANERA PARA MODIFICAR TODO, YA QUE LA FINALIDAD DE ESTO ES APRENDER BASES DE DATOS.
+
+Un cordial Saludo!
+	Mariano Maldonado
+https://github.com/MarianoMaldonado-dev/
+*/
+
 SELECT DNI, NOMBRE FROM TABLA_DE_CLIENTES;
 SELECT DNI AS IDENTIFICATION, NOMBRE AS CLIENTE FROM TABLA_DE_CLIENTES;
 SELECT * FROM tabla_de_productos;
@@ -462,7 +492,193 @@ GROUP BY DNI) X WHERE X.CONTADOR > 2000;
 
 /* UNIENDO TABLAS Y CONSULTAS: VIEWS
 Es una tabla logica que resulta de una consulta que puede ser usada posteriormente
-en cualquier otra consulta. Resulta util para mostrar la base de datos sin dar acceso total.
+en cualquier otra consulta. Resulta util para mostrar la base de datos sin dar acceso total 
+sino solo a una parte de la base de datos.
 
 SELECT X, SUM(Y) AS NEW_Y FROM <TB1> GROUP BY X
+Al almacenar la consulta, crearemos una View y la llamaremos VW_VIEW.
+La vision tiene UN COSTO DE PROCESAMIENTO, siempre que la invoquemos la misma tendra
+que ejecutar su consulta (Especie de subconsulta).
+
+SELECT * FROM VW_VIEW
+SELECT VW_VIEW.X, TB3.W FROM VW_VIEW
+	INNER JOIN
+TB3 ON VW_VIEW.NEW_Y = TB3.Y
+	WHERE TB3.Y = 16;
 */
+
+SELECT X.ENVASE, X.PRECIO_MAXIMO FROM vw_envases_grandes X
+	WHERE PRECIO_MAXIMO >=10;
+
+SELECT A.NOMBRE_DEL_PRODUCTO, A.ENVASE, A.PRECIO_DE_LISTA, 
+((A.PRECIO_DE_LISTA/B.PRECIO_MAXIMO)-1)*100 AS PORCENTAJE_DE_VARIACION FROM TABLA_DE_PRODUCTOS A
+	INNER JOIN
+vw_envases_grandes B
+ON A.ENVASE = B.ENVASE;
+
+/*	FUNCIONES CON STRINGS
+EJEMPLO:
+	SELECT CONCAT("SQL ", "TUTORIAL ", "IS ", "FUN!") AS ConcatenatedString;
+*//* PRUEBA EJECUTAR ESTO */
+SELECT CONCAT("SQL ", "TUTORIAL ", "IS ", "FUN!") AS ConcatenatedString;
+/* RECUERDA QUE LO QUE VA DESPUES DE 'AS' SIEMPRE ES UN <ALIAS> Y PUEDES PONER LO QUE SE TE OCURRA O NECESITES */
+/* OBSERVA Y EJECUTA*/
+SELECT CONCAT("SQL ", "TUTORIAL ", "IS ", "FUN!") AS Hola_Soy_un_Alias;
+/*
+UNA FUNCION MUY UTIL Y NECESARIA SABER EN BASES DE DATOS ES LA FUNCION RTRIM() Y LTRIM()
+SE UTILIZA PARA ELIMINAR ESPACIOS EN BLANCO TANTO A IZQUIERDA COMO DERECHA, MANTENIENDO UNA BASE DE DATOS LIMPIA DE CARACTERES EN BLANCO.
+EJEMPLO:
+	SELECT RTRIM("SQL TUTORIAL          ") AS Funcion_De_eliminar_espacios_a_la_derecha;
+*/
+SELECT RTRIM("SQL TUTORIAL          ") AS Funcion_De_eliminar_espacios_a_la_derecha;
+/* MAS SENCILLO QUE ESTO ES USAR TRIM() QUE YA CUMPLE LA FUNCION DE AMBAS */
+SELECT CONCAT("   ", "MySQL ", "TUTORIAL ", "    ") AS Hola_Soy_un_Alias;
+SELECT TRIM("       MySQL TUTORIAL          ") AS Funcion_De_eliminar_espacios;
+
+/* COMENCEMOS CON LA CLASE */
+SELECT LTRIM('        MySQL ES FACIL');
+SELECT RTRIM('MySQL ES FACIL        ');
+SELECT TRIM('        MySQL ES FACIL        ');
+
+SELECT CONCAT("MySQL ES FACIL ", "NO LO CREES?");
+
+SELECT UPPER('mysql es una base de datos interesante.');
+SELECT LOWER('MYSQL ES UNA BASE DE DATOS INTERESANTE.');
+
+SELECT SUBSTRING('mysql es una base de datos interesante.', 14,4);
+
+/* EJEMPLOS DE USO MAS REALES */
+SELECT CONCAT(NOMBRE, " ", DNI) FROM TABLA_DE_CLIENTES;
+
+/* ACTIVIDAD DE CLASE: Listando la dirección completa
+Haz una consulta listando el nombre del cliente y la dirección completa (Con calle, barrio, ciudad y estado).
+RESUELVO:
+*/
+SELECT * FROM TABLA_DE_CLIENTES;
+SELECT CONCAT("Estado o Nacion: ", ESTADO, " - Nombre completo: ", NOMBRE, " - Direccion: ", DIRECCION_1, 
+" - Piso/Dpto: ", DIRECCION_2, " - Barrio: ", BARRIO, " - Ciudad: ", CIUDAD) FROM TABLA_DE_CLIENTES ORDER BY ESTADO;
+/*HAY QUE OPTIMIZAR YA QUE LA VISTA DE LA QUERY NO ES LA MAS PROLIJA PERO EL RESULTADO ES EL ESPERADO*/
+/* RESULTADO PROPUESTO POR ALURA: */
+SELECT NOMBRE, CONCAT(DIRECCION_1, ' ', BARRIO, ' ', CIUDAD, ' ', ESTADO) AS COMPLETO FROM tabla_de_clientes;
+
+/* FUNCIONES DE FECHA
+SELECT CURRENT_TIMESTAMP();
+MUESTRA LA FECHA Y HORA ACTUAL.
+
+SELECT LOCALTIMESTAMP();
+MUESTRA LA FECHA Y HORA ACTUAL DEL SERVIDOR DONDE SE ENCUENTRA ALOJADO LA DB
+*/
+SELECT CURRENT_TIMESTAMP();
+SELECT localtimestamp(); /* EN ESTE CASO COMO SE ENCUENTRA ALOJADO EN TU DISCO DURO,
+EJECUTARA Y RETORNARA TU FECHA Y HORA LOCAL. PUEDES PROBAR EJECUTAR AMBAS LINEAS PARA QUE LO COMPRUEBES */
+
+SELECT CURDATE();
+SELECT current_timestamp();
+
+SELECT YEAR(current_timestamp());
+SELECT MONTH(current_timestamp());
+SELECT DAY(current_timestamp());
+SELECT MONTHNAME(current_timestamp());
+SELECT DAYNAME(current_timestamp());
+
+SELECT DATEDIFF(CURRENT_TIMESTAMP(), "2020-01-30"); /* ESTA FUNCION TE RETORNARA CUANTOS DIAS HAN PASADO DESDE
+LA <FECHA ACTUAL>, "FECHA ESPECIFICADA" */
+SELECT DATEDIFF(CURRENT_TIMESTAMP(), "1990-12-27") AS DIFERENCIA_DE_DIAS;
+
+SELECT current_timestamp() AS DIA_HOY, date_sub(current_timestamp(), INTERVAL 1 MONTH) AS RESULTADO; /* ESTA FUNCION
+LO QUE HACE ES RESTAR UN INTERVALO ESPECIFICADO */
+
+/* APLICANDO CASOS MAS REALISTAS */
+SELECT DISTINCT FECHA_VENTA, DAYNAME(FECHA_VENTA), MONTHNAME(FECHA_VENTA)
+	AS MES, YEAR(FECHA_VENTA) AS AÑO FROM FACTURAS;
+
+/* ACTIVIDAD DE CLASE: Edad de los clientes
+Haz una consulta que muestre el nombre y la edad actual del cliente.
+*/
+SELECT * FROM TABLA_DE_CLIENTES;
+/*SELECT NOMBRE AS NOMBRE_DEL_CLIENTE, current_timestamp(EDAD) AS EDAD_DEL_CLIENTE FROM TABLA_DE_CLIENTES;*/
+/* MI COMANDO ELEGIDO ES ERRONEO.
+LA PROPUESTA POR ALURA: */
+SELECT NOMBRE, TIMESTAMPDIFF(YEAR, FECHA_DE_NACIMIENTO, CURDATE()) AS EDAD FROM  tabla_de_clientes;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
