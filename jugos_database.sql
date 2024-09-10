@@ -1,6 +1,6 @@
 CREATE DATABASE jugos_database;
 
-USE jugos;
+USE jugos_database;
 
 DROP TABLE tbclientes;
 
